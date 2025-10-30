@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, Phone, Globe, Smartphone, Paintbrush, Server, Download, Upload, Palette, Moon, Sun } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, Globe, Smartphone, Paintbrush, Server, Upload, Palette, Moon, Sun, FileText } from "lucide-react";
 
 // ---- Quick Start -----------------------------------------------------------
 // 1) Click the image to upload your own photo.
@@ -22,6 +22,8 @@ const DEFAULTS = {
   },
 };
 
+// NOTE: Avoid import.meta.env.BASE_URL so this runs in any environment (canvas, dev, or Pages)
+// Use simple relative paths to /public/images assets.
 const PROJECTS = [
   {
     title: "TogetherWeCan – Volunteer App",
@@ -29,23 +31,21 @@ const PROJECTS = [
     description:
       "Android app built with Kotlin + Jetpack Compose and Firebase for event discovery and volunteering.",
     links: { demo: "#", code: "#" },
-    image: `${import.meta.env.BASE_URL}images/TogetherWeCan.png`
+    image: "images/TogetherWeCan.png",
   },
   {
     title: "My Word Today",
     tags: ["Swift", "Android", "Figma"],
-    description:
-      "Challenge Words with friends.",
+    description: "Challenge Words with friends.",
     links: { demo: "#", code: "https://apps.apple.com/us/app/my-word-today/id6741070359" },
-    image: `${import.meta.env.BASE_URL}images/My%20Word%20Today.png`
+    image: "images/My Word Today.png",
   },
   {
     title: "Medicine-Tracker",
     tags: ["Next.js", "SwiftUi", "Figma"],
-    description:
-      "Easy to Plan your pills and tasks.",
+    description: "Easy to Plan your pills and tasks.",
     links: { demo: "#", code: "https://apps.apple.com/us/app/medicine-tracker/id6742337631?platform=iphone" },
-    image: `${import.meta.env.BASE_URL}images/Medicine-Tracker.png`
+    image: "images/Medicine-Tracker.png",
   },
   {
     title: "Sermon Caster",
@@ -53,7 +53,7 @@ const PROJECTS = [
     description:
       "To create an inclusive experience for all participants, regardless of language, by providing live translation of spoken messages",
     links: { demo: "#", code: "#" },
-    image: `${import.meta.env.BASE_URL}images/SermonCaster.png`
+    image: "images/SermonCaster.png",
   },
 ];
 
@@ -73,6 +73,11 @@ export default function App() {
   const projectFileRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   const themeClass = dark ? "dark" : "";
+
+  // Robust CV link that works locally and on GitHub Pages
+  const cvUrl = (typeof window !== 'undefined' && window.location.hostname.endsWith('github.io'))
+    ? `https://${window.location.host}/orwah-portfolio/Orwah_Khadrow_CV.pdf`
+    : 'Orwah_Khadrow_CV.pdf';
 
   const accentStyle = useMemo<React.CSSProperties>(() => ({
     // Used for borders, glows, and buttons
@@ -182,10 +187,11 @@ export default function App() {
                   See my apps
                 </a>
                 <a
-                  href="/Orwah_Khadrow_CV.pdf"
+                  href={cvUrl}
+                  target="_blank" rel="noopener"
                   className="rounded-2xl px-5 py-3 font-medium border border-black/10 dark:border-white/10 hover:bg-white/50 dark:hover:bg-white/5 transition inline-flex items-center gap-2"
                 >
-                  <Download size={18} /> Download CV
+                  <FileText size={18} /> View CV
                 </a>
                 <div className="flex items-center gap-2 ml-2">
                   <a href={DEFAULTS.social.github} className="p-2 rounded-xl hover:bg-white/40 dark:hover:bg-white/5" aria-label="GitHub">
@@ -211,7 +217,7 @@ export default function App() {
               <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden shadow-2xl mx-auto">
                 <button onClick={pickPhoto} className="absolute inset-0 group" title="Click to change photo">
                   <img
-                    src={photoUrl || `${import.meta.env.BASE_URL}images/me.png`}
+                    src={photoUrl || "images/me.png"}
                     alt="Profile"
                     className="w-full h-full object-cover group-hover:scale-105 transition"
                   />
@@ -296,7 +302,7 @@ export default function App() {
                     title="Click to add/change project image"
                   >
                     <img
-                      src={projectImages[i] || (p.image || "https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=1600&auto=format&fit=crop")}
+                      src={projectImages[i] || p.image || "https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=1600&auto=format&fit=crop"}
                       alt={`${p.title} cover`}
                       className="w-full h-full object-cover group-hover:scale-105 transition"
                     />
